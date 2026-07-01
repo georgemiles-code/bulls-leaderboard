@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taranaki Bulls — ForceDecks Leaderboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #06080C; --surface: #0E1218; --surface2: #151B24;
+    --border: rgba(255,255,255,0.08); --amber: #E8A020; --text: #EEF1F6;
+    --text2: #8A94A6; --text3: #5A6474; --green: #2DD36F;
+    --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; border-bottom: 1px solid var(--border); background: rgba(14,18,24,0.95); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); }
+  .brand { display: flex; align-items: center; gap: 12; }
+  .brand-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #2A1A00, #1A1200); border: 1px solid rgba(232,160,32,0.4); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: var(--amber); }
+  .brand-name { font-size: 15px; font-weight: 800; }
+  .brand-sub { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: 1px; }
+  .tabs { display: flex; gap: 3px; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 3px; }
+  .tab { padding: 7px 20px; border-radius: 16px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: all 0.18s; background: transparent; color: var(--text3); }
+  .tab.active { background: var(--amber); color: #0D1117; }
+  .meta { font-size: 11px; color: var(--text3); text-align: right; }
+  .meta strong { color: var(--text2); }
+  .container { max-width: 760px; margin: 0 auto; padding: 28px 20px; }
+  .session-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .session-date { font-size: 13px; font-weight: 700; color: var(--text2); }
+  .session-stats { display: flex; gap: 24px; }
+  .stat { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 900; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-top: 1px; }
+  .row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; background: var(--surface); border-radius: 12px; margin-bottom: 6px; border: 1px solid var(--border); transition: background 0.15s; }
+  .row:hover { background: var(--surface2); }
+  .rank { font-size: 16px; font-weight: 900; color: var(--text3); min-width: 28px; text-align: center; font-variant-numeric: tabular-nums; }
+  .rank.gold { color: var(--gold); }
+  .rank.silver { color: var(--silver); }
+  .rank.bronze { color: var(--bronze); }
+  .name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text); }
+  .pos { font-size: 10px; font-weight: 600; color: var(--text3); margin-top: 2px; }
+  .score { font-size: 22px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
+  .score-unit { font-size: 11px; font-weight: 600; color: var(--text3); margin-left: 3px; }
+  .pb-badge { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.35); color: var(--amber); border-radius: 6px; padding: 2px 7px; text-transform: uppercase; }
+  .bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; margin: 0 8px; }
+  .bar { height: 100%; border-radius: 2px; background: var(--amber); transition: width 0.6s ease; }
+  .loading { display: flex; align-items: center; justify-content: center; padding: 80px 0; color: var(--text3); font-size: 13px; gap: 10px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); animation: pulse 1.2s ease-in-out infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,100%{opacity:0.2} 50%{opacity:1} }
+  .empty { text-align: center; padding: 60px 0; color: var(--text3); font-size: 14px; }
+  .refresh-info { text-align: center; font-size: 10px; color: var(--text3); padding: 20px; }
+  .error-msg { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; padding: 16px 20px; margin: 20px 0; font-size: 13px; color: #FCA5A5; }
+  .config-note { background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.2); border-radius: 10px; padding: 20px; margin: 20px 0; font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .config-note code { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 2px 6px; font-size: 11px; color: var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">TB</div>
+    <div>
+      <div class="brand-name">Taranaki Bulls</div>
+      <div class="brand-sub">ForceDecks Leaderboard</div>
+    </div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tt="cmj">CMJ</button>
+    <button class="tab" data-tt="drop_jump">Drop Jump</button>
+    <button class="tab" data-tt="ppu">Plyo Push Up</button>
+  </div>
+  <div class="meta" id="meta">
+    <strong>Loading…</strong>
+  </div>
+</div>
+
+<div class="container">
+  <div id="content">
+    <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+</div>
+
+<div class="refresh-info">Auto-refreshes every 60 seconds</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+// This URL is set automatically after first publish from the app.
+// If blank, the page will show setup instructions.
+const DATA_URL = window.LEADERBOARD_DATA_URL || 'https://gist.githubusercontent.com/georgemiles-code/e3c4937ebffd880058dcd3872bafa311/raw/leaderboard.json'
+
+const TEST_CFG = {
+  cmj:       { label: 'CMJ',          unit: 'cm',  decimals: 1, metric: 'Jump Height' },
+  drop_jump: { label: 'Drop Jump',    unit: 'RSI', decimals: 3, metric: 'RSI Score'   },
+  ppu:       { label: 'Plyo Push Up', unit: 'cm',  decimals: 1, metric: 'Push Height' },
+}
+
+let currentTestType = 'cmj'
+let cachedData = null
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('[data-tt]')
+  if (!btn) return
+  currentTestType = btn.dataset.tt
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tt === currentTestType))
+  if (cachedData) render(cachedData)
+})
+
+// ── Fetch ─────────────────────────────────────────────────────────────────────
+async function fetchData() {
+  if (!DATA_URL) { renderSetup(); return }
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now())
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    cachedData = await res.json()
+    render(cachedData)
+  } catch (err) {
+    document.getElementById('content').innerHTML = `<div class="error-msg">Could not load leaderboard data. The publish URL may be misconfigured, or there's a network error.<br><br><code>${err.message}</code></div>`
+  }
+}
+
+function renderSetup() {
+  document.getElementById('content').innerHTML = `
+    <div class="config-note">
+      <strong style="color:var(--amber);display:block;margin-bottom:8px">Setup required</strong>
+      To use this leaderboard page, open the Bulls Dashboard app, go to Force Lab, and click the <strong>Publish</strong> button.<br><br>
+      You'll need to add your GitHub Personal Access Token to:<br>
+      <code>data/leaderboard_share_config.json</code><br><br>
+      After the first publish, replace <code>window.LEADERBOARD_DATA_URL</code> in this file with the canonical URL shown in the app.
+    </div>`
+}
+
+function render(data) {
+  const test = data.tests?.[currentTestType]
+  const cfg = TEST_CFG[currentTestType]
+  const pubDate = data.published_at ? new Date(data.published_at).toLocaleString('en-NZ', { dateStyle: 'medium', timeStyle: 'short' }) : ''
+  document.getElementById('meta').innerHTML = pubDate ? `Published <strong>${pubDate}</strong>` : ''
+
+  if (!test || !test.entries || test.entries.length === 0) {
+    document.getElementById('content').innerHTML = `<div class="empty">No ${cfg.label} data published yet</div>`
+    return
+  }
+
+  const fmt = v => v != null ? Number(v).toFixed(cfg.decimals) : '—'
+  const maxVal = test.entries[0]?.primary || 1
+
+  let html = `
+    <div class="session-info">
+      <div>
+        <div class="session-date">${formatDate(test.date)}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:3px">${cfg.metric}</div>
+      </div>
+      <div class="session-stats">
+        <div class="stat"><div class="stat-val">${test.count}</div><div class="stat-lbl">Tested</div></div>
+        <div class="stat"><div class="stat-val" style="font-size:18px">${fmt(test.avg)}<span style="font-size:12px;color:var(--text3);margin-left:3px">${cfg.unit}</span></div><div class="stat-lbl">Session avg</div></div>
+        <div class="stat"><div class="stat-val">${test.entries.filter(e => e.is_pb).length}</div><div class="stat-lbl">PBs</div></div>
+      </div>
+    </div>`
+
+  for (const entry of test.entries) {
+    const rankClass = entry.rank === 1 ? 'gold' : entry.rank === 2 ? 'silver' : entry.rank === 3 ? 'bronze' : ''
+    const rankLabel = entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : entry.rank === 3 ? '🥉' : entry.rank
+    const barPct = Math.round((entry.primary / maxVal) * 100)
+    html += `
+      <div class="row">
+        <div class="rank ${rankClass}">${rankLabel}</div>
+        <div style="flex:1;min-width:0">
+          <div class="name">${entry.name}</div>
+          ${entry.position ? `<div class="pos">${entry.position}</div>` : ''}
+        </div>
+        <div class="bar-wrap"><div class="bar" style="width:${barPct}%"></div></div>
+        <div style="text-align:right">
+          <div><span class="score">${fmt(entry.primary)}</span><span class="score-unit">${cfg.unit}</span></div>
+          ${entry.is_pb ? `<div style="margin-top:4px"><span class="pb-badge">PB</span></div>` : entry.pb ? `<div style="font-size:10px;color:var(--text3);margin-top:3px">PB ${fmt(entry.pb)}</div>` : ''}
+        </div>
+      </div>`
+  }
+
+  document.getElementById('content').innerHTML = html
+}
+
+function formatDate(iso) {
+  if (!iso) return ''
+  try {
+    return new Date(iso + 'T12:00:00').toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })
+  } catch { return iso }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+fetchData()
+setInterval(fetchData, 60_000)
+</script>
+</body>
+</html>
