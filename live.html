@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taranaki Bulls — Live Leaderboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #06080C; --surface: #0E1218; --surface2: #151B24;
+    --border: rgba(255,255,255,0.08); --amber: #E8A020; --text: #EEF1F6;
+    --text2: #8A94A6; --text3: #5A6474; --green: #2DD36F;
+    --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32; --red: #EF4444;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid var(--border); background: rgba(14,18,24,0.95); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); gap: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #2A1A00, #1A1200); border: 1px solid rgba(232,160,32,0.4); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: var(--amber); flex-shrink: 0; }
+  .brand-name { font-size: 14px; font-weight: 800; }
+  .brand-sub { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: 1px; }
+  .live-badge { display: flex; align-items: center; gap: 7px; background: rgba(45,211,111,0.1); border: 1px solid rgba(45,211,111,0.3); border-radius: 20px; padding: 6px 14px; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: livepulse 1.4s ease-in-out infinite; }
+  @keyframes livepulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(45,211,111,0.5)} 50%{opacity:0.7;box-shadow:0 0 0 5px rgba(45,211,111,0)} }
+  .live-text { font-size: 11px; font-weight: 800; letter-spacing: 2.5px; color: var(--green); }
+  .waiting-badge { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 6px 14px; }
+  .waiting-text { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); }
+  .tabs { display: flex; gap: 3px; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 3px; }
+  .tab { padding: 6px 18px; border-radius: 16px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: all 0.18s; background: transparent; color: var(--text3); }
+  .tab.active { background: var(--amber); color: #0D1117; }
+  .meta { font-size: 11px; color: var(--text3); text-align: right; white-space: nowrap; }
+  .meta strong { color: var(--text2); }
+  .container { max-width: 780px; margin: 0 auto; padding: 24px 20px; }
+  .session-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .session-date { font-size: 13px; font-weight: 700; color: var(--text2); }
+  .session-meta { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .session-stats { display: flex; gap: 24px; }
+  .stat { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 900; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-top: 1px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface); border-radius: 12px; margin-bottom: 5px; border: 1px solid var(--border); transition: background 0.12s; }
+  .row:hover { background: var(--surface2); }
+  .row.new-entry { animation: fadeSlide 0.35s ease; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .rank { font-size: 15px; font-weight: 900; color: var(--text3); min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+  .rank.gold { color: var(--gold); }
+  .rank.silver { color: var(--silver); }
+  .rank.bronze { color: var(--bronze); }
+  .name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pos { font-size: 10px; font-weight: 600; color: var(--text3); margin-top: 2px; }
+  .recent { display: flex; gap: 4px; align-items: center; }
+  .attempt { font-size: 10px; color: var(--text3); background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 5px; font-variant-numeric: tabular-nums; }
+  .attempt.best { color: var(--amber); }
+  .score { font-size: 22px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
+  .score-unit { font-size: 11px; font-weight: 600; color: var(--text3); margin-left: 3px; }
+  .pb-badge { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.35); color: var(--amber); border-radius: 6px; padding: 2px 7px; text-transform: uppercase; }
+  .bar-wrap { width: 80px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; flex-shrink: 0; }
+  .bar { height: 100%; border-radius: 2px; background: var(--amber); transition: width 0.5s ease; }
+  .loading { display: flex; align-items: center; justify-content: center; padding: 80px 0; color: var(--text3); font-size: 13px; gap: 10px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); animation: dotpulse 1.2s ease-in-out infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotpulse { 0%,100%{opacity:0.2} 50%{opacity:1} }
+  .idle-state { text-align: center; padding: 80px 20px; }
+  .idle-icon { font-size: 48px; margin-bottom: 20px; opacity: 0.3; }
+  .idle-title { font-size: 18px; font-weight: 800; color: var(--text2); margin-bottom: 8px; }
+  .idle-sub { font-size: 13px; color: var(--text3); line-height: 1.6; }
+  .last-check { text-align: center; font-size: 10px; color: var(--text3); padding: 16px 20px 4px; }
+  .refresh-info { text-align: center; font-size: 10px; color: var(--text3); padding: 4px 20px 20px; }
+  .error-row { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 12px; color: #FCA5A5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">TB</div>
+    <div>
+      <div class="brand-name">Taranaki Bulls</div>
+      <div class="brand-sub">Live Leaderboard</div>
+    </div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tt="cmj">CMJ</button>
+    <button class="tab" data-tt="drop_jump">Drop Jump</button>
+    <button class="tab" data-tt="ppu">Plyo Push Up</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div id="live-indicator" class="waiting-badge">
+      <span class="waiting-text">WAITING</span>
+    </div>
+    <div class="meta" id="meta"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="content">
+    <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+</div>
+
+<div class="last-check" id="last-check"></div>
+<div class="refresh-info" id="refresh-info">Checking for active session…</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const GIST_ID = 'e3c4937ebffd880058dcd3872bafa311'
+const GIST_API = `https://api.github.com/gists/${GIST_ID}`
+const POLL_INTERVAL_MS = 2000
+const SESSION_CHECK_MS = 30000
+
+const TEST_CFG = {
+  cmj:       { label: 'CMJ',          unit: 'cm',  decimals: 1, metric: 'Jump Height' },
+  drop_jump: { label: 'Drop Jump',    unit: 'RSI', decimals: 3, metric: 'RSI Score'   },
+  ppu:       { label: 'Plyo Push Up', unit: 'cm',  decimals: 1, metric: 'Push Height' },
+}
+
+let currentTestType = 'cmj'
+let tunnelUrl = null
+let sessionActive = false
+let pollTimer = null
+let failCount = 0
+let lastUpdateMs = null
+let lastCheckMs = null
+let tickTimer = null
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('[data-tt]')
+  if (!btn) return
+  currentTestType = btn.dataset.tt
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tt === currentTestType))
+  if (sessionActive && tunnelUrl) fetchLeaderboard()
+})
+
+// ── NZ date ───────────────────────────────────────────────────────────────────
+function nzToday() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Auckland' })
+}
+
+// ── Session check via Gist API ────────────────────────────────────────────────
+async function checkSession() {
+  lastCheckMs = Date.now()
+  updateLastCheck()
+  try {
+    const r = await fetch(GIST_API, { headers: { 'X-GitHub-Api-Version': '2022-11-28' }, cache: 'no-store' })
+    if (!r.ok) throw new Error(`Gist API ${r.status}`)
+    const gist = await r.json()
+    const data = JSON.parse(gist.files['leaderboard.json'].content)
+    const wasActive = sessionActive
+    sessionActive = data.session_active === true
+    tunnelUrl = data.tunnel_url || null
+
+    if (sessionActive && tunnelUrl) {
+      setLiveBadge(true)
+      document.getElementById('refresh-info').textContent = 'Updates every 2 seconds'
+      if (!wasActive) {
+        // Session just became active — start polling immediately
+        failCount = 0
+        startPolling()
+      }
+    } else {
+      setLiveBadge(false)
+      stopPolling()
+      document.getElementById('refresh-info').textContent = 'No active session — checking every 30 seconds'
+      renderIdle()
+    }
+  } catch (err) {
+    updateLastCheck(`(error: ${err.message})`)
+  }
+}
+
+function setLiveBadge(live) {
+  const el = document.getElementById('live-indicator')
+  if (live) {
+    el.className = 'live-badge'
+    el.innerHTML = '<span class="live-dot"></span><span class="live-text">LIVE</span>'
+  } else {
+    el.className = 'waiting-badge'
+    el.innerHTML = '<span class="waiting-text">WAITING</span>'
+  }
+}
+
+// ── Polling ───────────────────────────────────────────────────────────────────
+function startPolling() {
+  stopPolling()
+  fetchLeaderboard()
+  pollTimer = setInterval(fetchLeaderboard, POLL_INTERVAL_MS)
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
+}
+
+async function fetchLeaderboard() {
+  if (!tunnelUrl) return
+  const today = nzToday()
+  const url = `${tunnelUrl}/force-lab/leaderboard?target_date=${today}&squad=male&test_type=${currentTestType}`
+  try {
+    const r = await fetch(url, { cache: 'no-store' })
+    if (!r.ok) throw new Error(`API ${r.status}`)
+    const data = await r.json()
+    failCount = 0
+    lastUpdateMs = Date.now()
+    render(data)
+  } catch (err) {
+    failCount++
+    if (failCount >= 3) {
+      // Tunnel may have changed — re-check session
+      stopPolling()
+      document.getElementById('content').innerHTML = `<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`
+      await checkSession()
+    }
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderIdle() {
+  document.getElementById('meta').innerHTML = ''
+  document.getElementById('content').innerHTML = `
+    <div class="idle-state">
+      <div class="idle-icon">📡</div>
+      <div class="idle-title">No active session</div>
+      <div class="idle-sub">The live leaderboard will appear here automatically when a ForceDecks session is started.<br><br>Hit <strong>▶ Share Live</strong> in the Bulls Dashboard app to begin.</div>
+    </div>`
+}
+
+function render(data) {
+  const entries = data.entries || []
+  const cfg = TEST_CFG[currentTestType]
+
+  const now = new Date()
+  document.getElementById('meta').innerHTML = `<strong>${now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</strong>`
+
+  if (entries.length === 0) {
+    document.getElementById('content').innerHTML = `
+      <div class="idle-state">
+        <div class="idle-icon">⏳</div>
+        <div class="idle-title">Session active — no results yet</div>
+        <div class="idle-sub">Results will appear here as athletes complete their ${cfg.label} tests.</div>
+      </div>`
+    return
+  }
+
+  const maxVal = entries[0]?.primary || 1
+  const avg = entries.length ? (entries.reduce((s, e) => s + e.primary, 0) / entries.length) : 0
+  const pbCount = entries.filter(e => e.is_pb).length
+  const fmt = (v, dec) => v != null ? Number(v).toFixed(dec ?? cfg.decimals) : '—'
+
+  let html = `
+    <div class="session-info">
+      <div>
+        <div class="session-date">${formatDate(data.date)}</div>
+        <div class="session-meta">${cfg.metric} · ${cfg.unit}</div>
+      </div>
+      <div class="session-stats">
+        <div class="stat"><div class="stat-val">${entries.length}</div><div class="stat-lbl">Tested</div></div>
+        <div class="stat"><div class="stat-val" style="font-size:18px">${fmt(avg)}<span style="font-size:12px;color:var(--text3);margin-left:3px">${cfg.unit}</span></div><div class="stat-lbl">Avg</div></div>
+        <div class="stat"><div class="stat-val">${pbCount}</div><div class="stat-lbl">PBs</div></div>
+      </div>
+    </div>`
+
+  for (const entry of entries) {
+    const rankClass = entry.rank === 1 ? 'gold' : entry.rank === 2 ? 'silver' : entry.rank === 3 ? 'bronze' : ''
+    const rankLabel = entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : entry.rank === 3 ? '🥉' : entry.rank
+    const barPct = Math.round((entry.primary / maxVal) * 100)
+    const recent = (entry.recent_jumps || [])
+
+    html += `
+      <div class="row">
+        <div class="rank ${rankClass}">${rankLabel}</div>
+        <div style="flex:1;min-width:0">
+          <div class="name">${entry.name}</div>
+          ${entry.position ? `<div class="pos">${entry.position}</div>` : ''}
+        </div>
+        ${recent.length > 1 ? `<div class="recent">${recent.map((v, i) => `<span class="attempt${i === recent.length - 1 ? ' best' : ''}">${fmt(v)}</span>`).join('')}</div>` : ''}
+        <div class="bar-wrap"><div class="bar" style="width:${barPct}%"></div></div>
+        <div style="text-align:right;flex-shrink:0">
+          <div><span class="score">${fmt(entry.primary)}</span><span class="score-unit">${cfg.unit}</span></div>
+          ${entry.is_pb
+            ? `<div style="margin-top:4px"><span class="pb-badge">PB</span></div>`
+            : entry.pb ? `<div style="font-size:10px;color:var(--text3);margin-top:2px">PB ${fmt(entry.pb)}</div>` : ''}
+        </div>
+      </div>`
+  }
+
+  document.getElementById('content').innerHTML = html
+}
+
+function formatDate(iso) {
+  if (!iso) return ''
+  try { return new Date(iso + 'T12:00:00').toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'long' }) }
+  catch { return iso }
+}
+
+function updateLastCheck(suffix) {
+  const el = document.getElementById('last-check')
+  if (!lastCheckMs) { el.textContent = ''; return }
+  const s = Math.round((Date.now() - lastCheckMs) / 1000)
+  el.textContent = `Session check: ${s}s ago${suffix ? ' ' + suffix : ''}`
+}
+
+// ── Tick (update "last check" counter) ───────────────────────────────────────
+function startTick() {
+  if (tickTimer) clearInterval(tickTimer)
+  tickTimer = setInterval(updateLastCheck, 5000)
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+checkSession()
+setInterval(checkSession, SESSION_CHECK_MS)
+startTick()
+</script>
+</body>
+</html>
