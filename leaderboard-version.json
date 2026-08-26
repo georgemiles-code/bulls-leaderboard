@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1859", "notes": "No terminal tabs \u2014 VBScript supervisor runs pythonw directly (no cmd/Windows Terminal)"}
+{"version": "2026.08.26-1904", "notes": "Cast fires instantly (no popup); minimal 'Update available' with 'what changed?'; last-updated stamp auto-hides"}
