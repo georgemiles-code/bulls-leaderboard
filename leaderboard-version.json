@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1221", "notes": "SSL fix \u2014 updater uses requests (robust HTTPS on Windows)"}
+{"version": "2026.08.26-1229", "notes": "Auto-update confirmation test"}
