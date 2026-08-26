@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1229", "notes": "Auto-update confirmation test"}
+{"version": "2026.08.26-1250", "notes": "Never blank the board on update \u2014 show relaunch message if engine doesn't return"}
