@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1851", "notes": "Cast button opens the TV picker (Win+K) + pythonw runs cleanly (no console)"}
+{"version": "2026.08.26-1859", "notes": "No terminal tabs \u2014 VBScript supervisor runs pythonw directly (no cmd/Windows Terminal)"}
