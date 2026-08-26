@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1843", "notes": "Hidden engine \u2014 no terminal windows (pythonw + windowless launcher)"}
+{"version": "2026.08.26-1851", "notes": "Cast button opens the TV picker (Win+K) + pythonw runs cleanly (no console)"}
