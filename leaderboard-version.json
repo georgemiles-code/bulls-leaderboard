@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1250", "notes": "Never blank the board on update \u2014 show relaunch message if engine doesn't return"}
+{"version": "2026.08.26-1259", "notes": "Cinematics now truly full screen \u2014 PB name no longer clipped at top"}
