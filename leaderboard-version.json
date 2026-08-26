@@ -1,1 +1,1 @@
-{"version": "2026.08.26-1924", "notes": "Podium photos: consistent near-square frame on all screens (shows head + torso, not just head)"}
+{"version": "2026.08.26-2001", "notes": "Podium spacing: trim photo height + top padding so it clears the all-time bar"}
