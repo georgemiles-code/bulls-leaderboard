@@ -1,1 +1,1 @@
-{"version": "2026.09.06-0956", "notes": "Live sync: new profiles get priority (no rotation wait); remove Haki Wiseman's retired hero photo from all boards"}
+{"version": "2026.09.06-0958", "notes": "Fix: sync_agent.py was missing from the update payload entirely \u2014 the rotating-batch/new-profile sync fixes now actually reach boards"}
