@@ -1,1 +1,1 @@
-{"version": "2026.09.06-0950", "notes": "Live sync: rotating batch caps VALD request rate (was 30-60s delays under load); Scott Barrett roster photo + creative hero photos"}
+{"version": "2026.09.06-0956", "notes": "Live sync: new profiles get priority (no rotation wait); remove Haki Wiseman's retired hero photo from all boards"}
