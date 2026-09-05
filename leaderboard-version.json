@@ -1,1 +1,1 @@
-{"version": "2026.09.06-0936", "notes": "Scott Barrett headshot \u2014 correctly sized (was accidentally full-res/21MB)"}
+{"version": "2026.09.06-0950", "notes": "Live sync: rotating batch caps VALD request rate (was 30-60s delays under load); Scott Barrett roster photo + creative hero photos"}
