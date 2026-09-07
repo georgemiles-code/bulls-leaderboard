@@ -1,1 +1,1 @@
-{"version": "2026.09.08-0946", "notes": "CRITICAL: fixed the per-athlete VALD endpoint (was always 404 for every athlete, silently, since it was written) \u2014 this was the real cause of slow/incomplete sync"}
+{"version": "2026.09.08-1006", "notes": "PB ticker now cycles the whole squad's PBs, not just today's testers"}
