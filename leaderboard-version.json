@@ -1,1 +1,1 @@
-{"version": "2026.09.08-1006", "notes": "PB ticker now cycles the whole squad's PBs, not just today's testers"}
+{"version": "2026.09.08-1022", "notes": "Cull 7 stale/never-tested profiles (Cody Macphail, Jacob Hawkins, Junnosuke Ito, Kaito Tamori, Maito Matsu, Taiora Cameron, William Johnston) \u2014 shrinks live-sync rotation"}
