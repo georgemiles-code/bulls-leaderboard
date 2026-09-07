@@ -1,1 +1,1 @@
-{"version": "2026.09.06-0958", "notes": "Fix: sync_agent.py was missing from the update payload entirely \u2014 the rotating-batch/new-profile sync fixes now actually reach boards"}
+{"version": "2026.09.08-0813", "notes": "Add Nick Arnold and Bradley Hopkins to NPC"}
