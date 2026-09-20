@@ -1,1 +1,1 @@
-{"version": "2026.09.15-2245", "notes": "Fix Cast-to-TV crash on Mac (missing sys import) \u2014 no effect on Windows, which already worked"}
+{"version": "2026.09.21-1100", "notes": "CRITICAL: fixed a silent data-loss bug that dropped CMJ results from the leaderboard for months when VALD's trials fetch had a hiccup (root cause fixed + 330 historical results backfilled, incl. the missing Fri 18 Sep session); session report long names no longer clip"}
