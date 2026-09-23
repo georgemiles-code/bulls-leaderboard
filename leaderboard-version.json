@@ -1,1 +1,1 @@
-{"version": "2026.09.23-1533", "notes": "Housekeeping: exclude .bak files from download refresh (fixes rsync race)"}
+{"version": "2026.09.23-1538", "notes": "PB ticker refreshes every 2s instead of 5s \u2014 it only reads local data (no VALD calls), so no reason it should lag behind the main leaderboard"}
