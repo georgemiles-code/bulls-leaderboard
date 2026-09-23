@@ -1,1 +1,1 @@
-{"version": "2026.09.23-1531", "notes": "Add Jarrad Hoeata to NPC (pre-registered, ready for his first test)"}
+{"version": "2026.09.23-1533", "notes": "Housekeeping: exclude .bak files from download refresh (fixes rsync race)"}
