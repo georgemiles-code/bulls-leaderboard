@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2316", "notes": "PB ticker: back to score order (fastest scorers first), faster scroll (1.1s/person), restart-on-fresh-result works for any athlete's new score"}
+{"version": "2026.09.24-2320", "notes": "PB ticker: slow down from 1.1s/person to 1.4s/person, 1.1 was too fast to read"}
