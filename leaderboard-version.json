@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2245", "notes": "PB ticker: most-recently-tested people now show at the front (not ranked by score), and the scroll restarts on a fresh result \u2014 with a big squad a full loop can take ~3 min, so this means you don't have to wait ages after testing to see your own name"}
+{"version": "2026.09.24-2252", "notes": "PB ticker: fix recency sort to use the actual timestamp (not just calendar date, which couldn't tell apart same-day testers) + speed up scroll ~45% \u2014 much less waiting to spot your own name after testing"}
