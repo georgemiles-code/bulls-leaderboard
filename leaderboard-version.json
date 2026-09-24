@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2306", "notes": "PB ticker numbers count up when they climb (like the cinematic reveals), instead of snapping straight to the new value"}
+{"version": "2026.09.24-2309", "notes": "Revert PB ticker count-up animation \u2014 too much motion; kept the proper ordering + restart-on-fresh-result + faster scroll"}
