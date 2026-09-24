@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2252", "notes": "PB ticker: fix recency sort to use the actual timestamp (not just calendar date, which couldn't tell apart same-day testers) + speed up scroll ~45% \u2014 much less waiting to spot your own name after testing"}
+{"version": "2026.09.24-2306", "notes": "PB ticker numbers count up when they climb (like the cinematic reveals), instead of snapping straight to the new value"}
