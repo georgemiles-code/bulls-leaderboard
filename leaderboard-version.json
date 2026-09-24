@@ -1,1 +1,1 @@
-{"version": "2026.09.25-0842", "notes": "Add David Barnard to NPC roster"}
+{"version": "2026.09.25-0847", "notes": "Fix: remove duplicate David Barnard athlete record created in error \u2014 he was already on the roster (WTG, tagged NPC via VALD)"}
