@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2309", "notes": "Revert PB ticker count-up animation \u2014 too much motion; kept the proper ordering + restart-on-fresh-result + faster scroll"}
+{"version": "2026.09.24-2316", "notes": "PB ticker: back to score order (fastest scorers first), faster scroll (1.1s/person), restart-on-fresh-result works for any athlete's new score"}
