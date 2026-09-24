@@ -1,1 +1,1 @@
-{"version": "2026.09.23-1538", "notes": "PB ticker refreshes every 2s instead of 5s \u2014 it only reads local data (no VALD calls), so no reason it should lag behind the main leaderboard"}
+{"version": "2026.09.24-2245", "notes": "PB ticker: most-recently-tested people now show at the front (not ranked by score), and the scroll restarts on a fresh result \u2014 with a big squad a full loop can take ~3 min, so this means you don't have to wait ages after testing to see your own name"}
