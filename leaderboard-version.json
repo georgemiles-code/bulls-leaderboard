@@ -1,1 +1,1 @@
-{"version": "2026.09.24-2320", "notes": "PB ticker: slow down from 1.1s/person to 1.4s/person, 1.1 was too fast to read"}
+{"version": "2026.09.24-2334", "notes": "Mac desktop app now self-updates: downloads and swaps itself instead of needing a manual rebuild+reinstall"}
